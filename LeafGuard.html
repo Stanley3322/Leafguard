@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LeafGuard - Demo Mode</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #f0f4f0;
+            color: #2d5016;
+        }
+        .header { background: white; box-shadow: 0 2px 10px rgba(76, 175, 80, 0.2); position: sticky; top: 0; z-index: 1000; }
+        .nav-container { max-width: 1200px; margin: 0 auto; padding: 20px 30px; display: flex; justify-content: space-between; align-items: center; }
+        .logo {
+            font-size: 1.8em; font-weight: bold;
+            background: linear-gradient(135deg, #4CAF50 0%, #2e7d32 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            display: flex; align-items: center; gap: 10px;
+        }
+        .nav-links { display: flex; gap: 30px; align-items: center; }
+        .nav-links a {
+            text-decoration: none; color: #2d5016; font-weight: 500; transition: color 0.3s; cursor: pointer;
+        }
+        .nav-links a:hover { color: #4CAF50; }
+        .btn-primary {
+            background: linear-gradient(135deg, #4CAF50 0%, #2e7d32 100%);
+            color: white; padding: 12px 30px; border-radius: 25px;
+            text-decoration: none; font-weight: 600; transition: transform 0.3s;
+            cursor: pointer; border: none;
+        }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(76, 175, 80, 0.4); }
+        .hero {
+            background: linear-gradient(135deg, #4CAF50 0%, #2e7d32 100%);
+            color: white; padding: 120px 30px; text-align: center; position: relative; overflow: hidden;
+        }
+        .hero::before {
+            content: '🌿'; position: absolute; font-size: 300px; opacity: 0.1;
+            top: -50px; right: -50px; animation: float 6s ease-in-out infinite;
+        }
+        @keyframes float {
+            0%,100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-30px) rotate(5deg); }
+        }
+        .hero-content { max-width: 800px; margin: 0 auto; position: relative; z-index: 1; }
+        .demo-badge {
+            background: #FFA726; color: white; padding: 10px 20px;
+            border-radius: 50px; font-weight: bold; display: inline-block;
+            margin-bottom: 20px; animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%,100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        .hero h1 { font-size: 3em; margin-bottom: 20px; text-shadow: 2px 2px 4px rgba(0,0,0,0.2); }
+        .hero p { font-size: 1.3em; margin-bottom: 40px; opacity: 0.95; }
+        .hero-btn {
+            background: white; color: #4CAF50; padding: 18px 50px; border-radius: 50px;
+            font-size: 1.2em; font-weight: bold; border: none; cursor: pointer;
+            transition: all 0.3s; box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        .hero-btn:hover { transform: translateY(-3px); box-shadow: 0 15px 40px rgba(0,0,0,0.3); }
+        .upload-section { max-width: 900px; margin: -80px auto 100px; padding: 0 30px; position: relative; z-index: 10; }
+        .upload-card {
+            background: white; border-radius: 20px; padding: 60px;
+            box-shadow: 0 20px 60px rgba(76,175,80,0.15);
+        }
+        .demo-notice {
+            margin-bottom: 30px; padding: 20px;
+            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+            border-radius: 15px; border-left: 5px solid #4CAF50;
+        }
+        .demo-notice h3 { color: #2e7d32; margin-bottom: 10px; display: flex; align-items: center; gap: 10px; }
+        .upload-area {
+            border: 3px dashed #4CAF50; border-radius: 15px; padding: 60px;
+            text-align: center; background: linear-gradient(135deg, #f1f8f4 0%, #dcedc8 100%);
+            cursor: pointer; transition: all 0.3s ease;
+        }
+        .upload-area.dragover {
+            background: linear-gradient(135deg, #4CAF50 0%, #2e7d32 100%);
+            border-color: white;
+        }
+        .upload-icon { font-size: 5em; margin-bottom: 20px; animation: bounce 2s infinite; }
+        @keyframes bounce { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
+        .preview-container { margin-top: 30px; display: none; }
+        .image-preview {
+            max-width: 100%; max-height: 400px; border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2); margin-bottom: 20px; display: block; margin-left: auto; margin-right: auto;
+        }
+        .analyze-btn {
+            background: linear-gradient(135deg,#4CAF50 0%,#2e7d32 100%);
+            color: white; border: none; padding: 15px 50px; font-size: 1.2em;
+            border-radius: 50px; cursor: pointer; transition: all 0.3s; font-weight: bold;
+        }
+        .loading { display: none; text-align: center; margin: 30px 0; }
+        .spinner {
+            border: 4px solid #c8e6c9; border-top: 4px solid #4CAF50; border-radius: 50%;
+            width: 60px; height: 60px; animation: spin 1s linear infinite; margin: 0 auto 20px;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg);} 100% { transform: rotate(360deg);} }
+        .result-container {
+            display: none; margin-top: 40px; padding: 40px;
+            background: linear-gradient(135deg,#f1f8f4 0%,#dcedc8 100%);
+            border-radius: 15px; border-left: 5px solid #4CAF50;
+        }
+        .result-title { font-size: 1.8em; color: #2e7d32; margin-bottom: 20px; display: flex; gap: 10px; }
+        .result-text { white-space: pre-wrap; line-height: 1.8; }
+        .reset-btn {
+            background: #4CAF50; color: white; padding: 12px 30px; border-radius: 50px;
+            cursor: pointer; margin-top: 20px; border: none;
+        }
+    </style>
+</head>
+
+<body>
+
+<header class="header">
+    <div class="nav-container">
+        <div class="logo">🌿 LeafGuard</div>
+        <nav class="nav-links">
+            <a href="#upload">Identifier</a>
+            <a href="#diseases">Penyakit</a>
+            <a href="#features">Fitur</a>
+            <button class="btn-primary" onclick="document.getElementById('upload').scrollIntoView({behavior:'smooth'})">Mulai</button>
+        </nav>
+    </div>
+</header>
+
+<section class="hero">
+    <div class="hero-content">
+<h1>Identifikasi Penyakit Tanaman</h1>
+        <p>Terhubung Dengan AI</p>
+        <button class="hero-btn" onclick="document.getElementById('upload').scrollIntoView({behavior:'smooth'})">📸 Diagnose</button>
+    </div>
+</section>
+
+<section id="upload" class="upload-section">
+    <div class="upload-card">
+        <div class="demo-notice">
+            <h3><span>ℹ️</span> <span>LeafGuard - AI Mode</span></h3>
+            <p>Unggah gambar tanaman dan AI akan menganalisis penyakitnya.</p>
+        </div>
+
+        <div class="upload-area" id="uploadArea">
+            <div class="upload-icon">📷</div>
+            <div class="upload-text">Klik atau Seret Foto Tanaman Anda</div>
+            <div class="upload-subtext">Format: JPG, PNG (Maksimal 10MB)</div>
+            <input type="file" id="fileInput" accept="image/*">
+        </div>
+
+        <div class="preview-container" id="previewContainer">
+            <img id="imagePreview" class="image-preview" alt="Preview">
+            <div id="analyzeBtnWrapper" style="text-align:center;">
+                <button class="analyze-btn" id="analyzeBtn" disabled>🔬 Analisis Kesehatan Tanaman</button>
+            </div>
+        </div>
+
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p style="color:#4CAF50;font-weight:500;">AI sedang menganalisis tanaman Anda...</p>
+        </div>
+
+        <div class="result-container" id="resultContainer">
+            <div class="result-title"><span>✅</span><span>Hasil Diagnosis AI</span></div>
+            <div class="result-text" id="resultText"></div>
+            <button class="reset-btn" id="resetBtn">🔄 Diagnosa Tanaman Lain</button>
+        </div>
+    </div>
+</section>
+
+<script>
+// =========================
+// AI WEBHOOK URL
+// =========================
+const API_URL = "http://localhost:5678/webhook/leafguard-diagnosis";
+
+// DOM REFERENCES
+const uploadArea = document.getElementById("uploadArea");
+const fileInput = document.getElementById("fileInput");
+const previewContainer = document.getElementById("previewContainer");
+const imagePreview = document.getElementById("imagePreview");
+const analyzeBtn = document.getElementById("analyzeBtn");
+const analyzeBtnWrapper = document.getElementById("analyzeBtnWrapper");
+const loading = document.getElementById("loading");
+const resultContainer = document.getElementById("resultContainer");
+const resultText = document.getElementById("resultText");
+const resetBtn = document.getElementById("resetBtn");
+
+// HANDLE FILE
+function handleFile() {
+    const file = fileInput.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        imagePreview.src = e.target.result;
+        uploadArea.style.display = "none";
+        previewContainer.style.display = "block";
+        analyzeBtn.disabled = false;
+    };
+    reader.readAsDataURL(file);
+}
+uploadArea.onclick = () => fileInput.click();
+fileInput.onchange = handleFile;
+
+// DRAG EVENTS
+uploadArea.addEventListener("dragover", e => {
+    e.preventDefault();
+    uploadArea.classList.add("dragover");
+});
+uploadArea.addEventListener("dragleave", () => uploadArea.classList.remove("dragover"));
+uploadArea.addEventListener("drop", e => {
+    e.preventDefault();
+    uploadArea.classList.remove("dragover");
+    if (e.dataTransfer.files?.length) {
+        fileInput.files = e.dataTransfer.files;
+        handleFile();
+    }
+});
+
+// =========================
+// REAL AI CALL
+// =========================
+analyzeBtn.addEventListener("click", async () => {
+    analyzeBtnWrapper.style.display = "none";
+    loading.style.display = "block";
+
+    const imageBase64 = imagePreview.src;
+
+    try {
+        const res = await fetch(API_URL, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ image: imageBase64 })
+        });
+
+        const data = await res.json();
+
+        loading.style.display = "none";
+        resultContainer.style.display = "block";
+        resultText.textContent = data.diagnosis || "AI tidak mengembalikan diagnosa.";
+
+    } catch (error) {
+        loading.style.display = "none";
+        resultContainer.style.display = "block";
+        resultText.textContent = "❗ Error: Tidak dapat terhubung ke AI Agent.";
+    }
+});
+
+// RESET
+resetBtn.addEventListener("click", () => {
+    resultContainer.style.display = "none";
+    previewContainer.style.display = "none";
+    uploadArea.style.display = "block";
+    analyzeBtnWrapper.style.display = "block";
+    imagePreview.src = "";
+    fileInput.value = "";
+    analyzeBtn.disabled = true;
+});
+</script>
+
+</body>
+</html>
