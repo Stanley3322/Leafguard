@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LeafGuard - Demo Mode</title>
+    <title>LeafGuard - AI Diagnosis</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -30,89 +30,45 @@
             text-decoration: none; font-weight: 600; transition: transform 0.3s;
             cursor: pointer; border: none;
         }
-        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(76, 175, 80, 0.4); }
         .hero {
             background: linear-gradient(135deg, #4CAF50 0%, #2e7d32 100%);
-            color: white; padding: 120px 30px; text-align: center; position: relative; overflow: hidden;
+            color: white; padding: 120px 30px; text-align: center;
         }
-        .hero::before {
-            content: '🌿'; position: absolute; font-size: 300px; opacity: 0.1;
-            top: -50px; right: -50px; animation: float 6s ease-in-out infinite;
-        }
-        @keyframes float {
-            0%,100% { transform: translateY(0px) rotate(0deg); }
-            50% { transform: translateY(-30px) rotate(5deg); }
-        }
-        .hero-content { max-width: 800px; margin: 0 auto; position: relative; z-index: 1; }
-        .demo-badge {
-            background: #FFA726; color: white; padding: 10px 20px;
-            border-radius: 50px; font-weight: bold; display: inline-block;
-            margin-bottom: 20px; animation: pulse 2s infinite;
-        }
-        @keyframes pulse {
-            0%,100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-        }
-        .hero h1 { font-size: 3em; margin-bottom: 20px; text-shadow: 2px 2px 4px rgba(0,0,0,0.2); }
-        .hero p { font-size: 1.3em; margin-bottom: 40px; opacity: 0.95; }
+        .hero h1 { font-size: 3em; margin-bottom: 20px; }
+        .hero p { font-size: 1.3em; margin-bottom: 40px; }
         .hero-btn {
             background: white; color: #4CAF50; padding: 18px 50px; border-radius: 50px;
             font-size: 1.2em; font-weight: bold; border: none; cursor: pointer;
-            transition: all 0.3s; box-shadow: 0 10px 30px rgba(0,0,0,0.2);
         }
-        .hero-btn:hover { transform: translateY(-3px); box-shadow: 0 15px 40px rgba(0,0,0,0.3); }
-        .upload-section { max-width: 900px; margin: -80px auto 100px; padding: 0 30px; position: relative; z-index: 10; }
+        .upload-section { max-width: 900px; margin: -80px auto 100px; padding: 0 30px; }
         .upload-card {
             background: white; border-radius: 20px; padding: 60px;
             box-shadow: 0 20px 60px rgba(76,175,80,0.15);
         }
-        .demo-notice {
-            margin-bottom: 30px; padding: 20px;
-            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
-            border-radius: 15px; border-left: 5px solid #4CAF50;
-        }
-        .demo-notice h3 { color: #2e7d32; margin-bottom: 10px; display: flex; align-items: center; gap: 10px; }
         .upload-area {
             border: 3px dashed #4CAF50; border-radius: 15px; padding: 60px;
-            text-align: center; background: linear-gradient(135deg, #f1f8f4 0%, #dcedc8 100%);
-            cursor: pointer; transition: all 0.3s ease;
+            text-align: center; cursor: pointer;
         }
-        .upload-area.dragover {
-            background: linear-gradient(135deg, #4CAF50 0%, #2e7d32 100%);
-            border-color: white;
-        }
-        .upload-icon { font-size: 5em; margin-bottom: 20px; animation: bounce 2s infinite; }
-        @keyframes bounce { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
         .preview-container { margin-top: 30px; display: none; }
         .image-preview {
-            max-width: 100%; max-height: 400px; border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2); margin-bottom: 20px; display: block; margin-left: auto; margin-right: auto;
-        }
-        .analyze-btn {
-            background: linear-gradient(135deg,#4CAF50 0%,#2e7d32 100%);
-            color: white; border: none; padding: 15px 50px; font-size: 1.2em;
-            border-radius: 50px; cursor: pointer; transition: all 0.3s; font-weight: bold;
+            max-width: 100%; border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2); margin-bottom: 20px;
         }
         .loading { display: none; text-align: center; margin: 30px 0; }
         .spinner {
             border: 4px solid #c8e6c9; border-top: 4px solid #4CAF50; border-radius: 50%;
-            width: 60px; height: 60px; animation: spin 1s linear infinite; margin: 0 auto 20px;
+            width: 60px; height: 60px; animation: spin 1s linear infinite; margin: auto;
         }
-        @keyframes spin { 0% { transform: rotate(0deg);} 100% { transform: rotate(360deg);} }
+        @keyframes spin { 100% { transform: rotate(360deg);} }
         .result-container {
             display: none; margin-top: 40px; padding: 40px;
-            background: linear-gradient(135deg,#f1f8f4 0%,#dcedc8 100%);
-            border-radius: 15px; border-left: 5px solid #4CAF50;
+            background: #eaf7ea; border-radius: 15px; border-left: 5px solid #4CAF50;
         }
-        .result-title { font-size: 1.8em; color: #2e7d32; margin-bottom: 20px; display: flex; gap: 10px; }
         .result-text { white-space: pre-wrap; line-height: 1.8; }
         .reset-btn {
             background: #4CAF50; color: white; padding: 12px 30px; border-radius: 50px;
             cursor: pointer; margin-top: 20px; border: none;
         }
-        .small-muted { font-size: 0.9em; color: #356635; margin-top: 8px; }
-        .error-details { display: none; margin-top: 12px; color: #b71c1c; background: #ffebee; padding: 12px; border-radius: 8px; white-space: pre-wrap; }
-        .demo-fallback { background: #FFA726; color: white; padding: 10px 18px; border-radius: 20px; border: none; cursor: pointer; margin-top: 10px; }
     </style>
 </head>
 
@@ -123,8 +79,6 @@
         <div class="logo">🌿 LeafGuard</div>
         <nav class="nav-links">
             <a href="#upload">Identifier</a>
-            <a href="#diseases">Penyakit</a>
-            <a href="#features">Fitur</a>
             <button class="btn-primary" onclick="document.getElementById('upload').scrollIntoView({behavior:'smooth'})">Mulai</button>
         </nav>
     </div>
@@ -140,362 +94,94 @@
 
 <section id="upload" class="upload-section">
     <div class="upload-card">
-        <div class="demo-notice">
-            <h3><span>ℹ️</span> <span>LeafGuard - AI Mode</span></h3>
-            <p>Unggah gambar tanaman dan AI akan menganalisis penyakitnya.</p>
-        </div>
 
         <div class="upload-area" id="uploadArea">
             <div class="upload-icon">📷</div>
-            <div class="upload-text">Klik atau Seret Foto Tanaman Anda</div>
-            <div class="upload-subtext">Format: JPG, PNG (Maksimal 10MB)</div>
+            <p>Klik atau Seret Foto Tanaman</p>
             <input type="file" id="fileInput" accept="image/*">
         </div>
 
         <div class="preview-container" id="previewContainer">
-            <img id="imagePreview" class="image-preview" alt="Preview">
-            <div id="analyzeBtnWrapper" style="text-align:center;">
-                <button class="analyze-btn" id="analyzeBtn" disabled>🔬 Analisis Kesehatan Tanaman</button>
-            </div>
+            <img id="imagePreview" class="image-preview">
+            <button class="hero-btn" id="analyzeBtn" disabled>🔬 Analisis</button>
         </div>
 
         <div class="loading" id="loading">
             <div class="spinner"></div>
-            <p style="color:#4CAF50;font-weight:500;">AI sedang menganalisis tanaman Anda...</p>
+            <p>AI sedang menganalisis...</p>
         </div>
 
         <div class="result-container" id="resultContainer">
-            <div class="result-title" id="resultTitle"><span>✅</span><span>Hasil Diagnosis AI</span></div>
             <div class="result-text" id="resultText"></div>
-            <div id="errorDetails" class="error-details" role="status" aria-live="polite"></div>
-            <div style="margin-top:12px;">
-                <button class="demo-fallback" id="demoBtn" style="display:none;">Gunakan Contoh Hasil (Demo)</button>
-            </div>
-            <div style="margin-top:18px;">
-                <button class="reset-btn" id="resetBtn">🔄 Diagnosa Tanaman Lain</button>
-            </div>
-            <div class="small-muted" id="tips" style="display:none;">
-                Tip: Jika muncul error koneksi, pastikan server AI berjalan di host & port yang benar dan mengizinkan CORS (Access-Control-Allow-Origin).
-            </div>
+            <button class="reset-btn" id="resetBtn">Diagnosa Ulang</button>
         </div>
     </div>
 </section>
 
 <script>
-// =========================
-// AI WEBHOOK URL
-// =========================
-// Jika Anda meng-host AI agent di server lain, ganti API_URL ke alamat yang benar (http[s]://...).
-// Contoh: const API_URL = "https://api.myhost.com/webhook/leafguard-diagnosis";
 const API_URL = "https://stanley3322.app.n8n.cloud/webhook/leafguard-diagnosis";
 
-// Toggle: tampilkan output RAW (JSON) daripada "pretty" parsing
-const RAW_OUTPUT = true;
-
-// DOM REFERENCES
 const uploadArea = document.getElementById("uploadArea");
 const fileInput = document.getElementById("fileInput");
 const previewContainer = document.getElementById("previewContainer");
 const imagePreview = document.getElementById("imagePreview");
 const analyzeBtn = document.getElementById("analyzeBtn");
-const analyzeBtnWrapper = document.getElementById("analyzeBtnWrapper");
 const loading = document.getElementById("loading");
 const resultContainer = document.getElementById("resultContainer");
 const resultText = document.getElementById("resultText");
 const resetBtn = document.getElementById("resetBtn");
-const errorDetails = document.getElementById("errorDetails");
-const demoBtn = document.getElementById("demoBtn");
-const tips = document.getElementById("tips");
-const resultTitle = document.getElementById("resultTitle");
 
-// HANDLE FILE
-function handleFile() {
+uploadArea.onclick = () => fileInput.click();
+
+fileInput.onchange = async () => {
     const file = fileInput.files[0];
     if (!file) return;
 
-    // Optional: file size check (10MB)
-    if (file.size > 10 * 1024 * 1024) {
-        alert("Ukuran file terlalu besar. Maksimum 10MB.");
-        fileInput.value = "";
-        return;
-    }
-
     const reader = new FileReader();
-    reader.onload = (e) => {
-        imagePreview.src = e.target.result;
-        uploadArea.style.display = "none";
+    reader.onload = () => {
+        imagePreview.src = reader.result;
         previewContainer.style.display = "block";
         analyzeBtn.disabled = false;
     };
     reader.readAsDataURL(file);
-}
-uploadArea.onclick = () => fileInput.click();
-fileInput.onchange = handleFile;
+};
 
-// DRAG EVENTS
-uploadArea.addEventListener("dragover", e => {
-    e.preventDefault();
-    uploadArea.classList.add("dragover");
-});
-uploadArea.addEventListener("dragleave", () => uploadArea.classList.remove("dragover"));
-uploadArea.addEventListener("drop", e => {
-    e.preventDefault();
-    uploadArea.classList.remove("dragover");
-    if (e.dataTransfer.files?.length) {
-        fileInput.files = e.dataTransfer.files;
-        handleFile();
-    }
-});
-
-// Utility: escape HTML to avoid injection when inserting innerHTML
-function escapeHtml(str) {
-    if (str === null || str === undefined) return "";
-    return String(str)
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
-}
-
-// Convert multiline text into a <ul> list if multiple lines, otherwise keep paragraphs
-function nlToList(rawText) {
-    if (!rawText) return "";
-    const lines = String(rawText).split(/\r?\n/).map(l => l.trim()).filter(Boolean);
-    if (lines.length === 0) return "";
-    if (lines.length === 1) {
-        return `<p>${escapeHtml(lines[0]).replace(/\n/g,'<br>')}</p>`;
-    }
-    return "<ul style='margin-top:6px;margin-bottom:6px;'>" +
-        lines.map(l => `<li>${escapeHtml(l).replace(/^[-•\*\d\.\)\s]*/, "")}</li>`).join("") +
-        "</ul>";
-}
-
-// Utility: show pretty result HTML using available fields (kept for compatibility, but not used when RAW_OUTPUT=true)
-function renderPrettyResultFromResponse(data, isDemo = false) {
-    // n8n returns {"output":{...}} in some flows; handle that case
-    const payload = (data && data.output) ? data.output : (data || {});
-    // Try multiple key names (Indo/Eng) to be robust
-    const identifikasi = payload.identifikasi || payload.plant || payload.nama || payload.identification || "";
-    const status = payload.status || payload.kesehatan || payload.health_status || "";
-    const gejala = payload.gejala || payload.symptoms || payload.gejala_terlihat || "";
-    const diagnosis = payload.diagnosis || payload.diagnosa || payload.diagnosis_text || "";
-    const rekomendasi = payload.rekomendasi || payload.recommendation || payload.rekomendasi_perawatan || "";
-    const raw = payload.raw || payload.note || JSON.stringify(payload);
-
-    // Build HTML
-    let html = "";
-    if (isDemo) {
-        // mark title to show demo suffix
-        resultTitle.innerHTML = `<span>✅</span><span>Hasil Diagnosis AI (Demo)</span>`;
-    } else {
-        resultTitle.innerHTML = `<span>✅</span><span>Hasil Diagnosis AI</span>`;
-    }
-
-    html += `<div style="font-size:1.02em; color:#274e13;">`;
-    if (identifikasi) {
-        html += `<div style="font-weight:700; font-size:1.05em; margin-bottom:8px;">🌱 IDENTIFIKASI TANAMAN: ${escapeHtml(identifikasi)}</div>`;
-    }
-    if (status) {
-        html += `<div style="font-weight:700; margin-bottom:8px;">🥗 STATUS KESEHATAN: ${escapeHtml(status)}</div>`;
-    }
-    if (gejala) {
-        html += `<div style="font-weight:700; margin-top:6px;">👁️ GEJALA YANG TERLIHAT:</div>${nlToList(gejala)}`;
-    }
-    if (diagnosis) {
-        html += `<div style="font-weight:700; margin-top:8px;">🦠 DIAGNOSIS:</div><p>${escapeHtml(diagnosis).replace(/\n/g,'<br>')}</p>`;
-    }
-    if (rekomendasi) {
-        html += `<div style="font-weight:700; margin-top:8px;">💊 REKOMENDASI PERAWATAN:</div>${nlToList(rekomendasi)}`;
-    }
-    // Show raw note in small text for debugging / provenance
-    if (raw) {
-        html += `<div style="margin-top:12px; color:#355a2f; font-size:0.95em;"><em>Catatan asli: ${escapeHtml(raw)}</em></div>`;
-    }
-    html += `</div>`;
-
-    // Fallback: if nothing parsed, dump pretty JSON
-    const hasMeaningful = identifikasi || status || gejala || diagnosis || rekomendasi;
-    if (!hasMeaningful) {
-        html = `<pre style="white-space:pre-wrap; background:#fff9e6; padding:12px; border-radius:8px;">${escapeHtml(JSON.stringify(payload, null, 2))}</pre>`;
-    }
-
-    resultText.innerHTML = html;
-}
-
-// Utility: tampilkan hasil raw JSON atau teks (untuk RAW_OUTPUT mode)
-function displayRawResult(data, isDemo = false) {
-    loading.style.display = "none";
-    resultContainer.style.display = "block";
-    errorDetails.style.display = "none";
-    tips.style.display = "none";
-    demoBtn.style.display = "none";
-
-    if (isDemo) {
-        resultTitle.innerHTML = `<span>✅</span><span>Hasil Diagnosis AI (Demo - Raw)</span>`;
-    } else {
-        resultTitle.innerHTML = `<span>✅</span><span>Hasil Diagnosis AI (Raw)</span>`;
-    }
-
-    // If it's an object, pretty-print JSON; if it's a string, show as-is
-    if (typeof data === "object" && data !== null) {
-        resultText.innerHTML = `<pre style="white-space:pre-wrap; background:#fff; padding:12px; border-radius:8px;">${escapeHtml(JSON.stringify(data, null, 2))}</pre>`;
-    } else {
-        resultText.textContent = String(data);
-    }
-}
-
-// Utility: tampilkan hasil atau error (digunakan untuk pesan error non-JSON)
-function showResult(text, details, rawResponse) {
-    loading.style.display = "none";
-    resultContainer.style.display = "block";
-
-    // If RAW_OUTPUT is enabled and text is an object, display raw JSON
-    if (RAW_OUTPUT && typeof text === "object" && text !== null) {
-        displayRawResult(text, false);
-        if (details) {
-            errorDetails.style.display = "block";
-            errorDetails.textContent = details;
-            tips.style.display = "block";
-        }
-        return;
-    }
-
-    // If we have a structured JSON response as 'text' (object) and RAW_OUTPUT disabled, render pretty
-    if (typeof text === "object" && text !== null) {
-        renderPrettyResultFromResponse(text, false);
-        if (details) {
-            errorDetails.style.display = "block";
-            errorDetails.textContent = details;
-            tips.style.display = "block";
-        } else {
-            errorDetails.style.display = "none";
-            errorDetails.textContent = "";
-            tips.style.display = "none";
-        }
-        return;
-    }
-
-    // if text is simple string (error or raw string) show as plain text
-    resultText.textContent = text || "AI tidak mengembalikan diagnosa.";
-    if (details) {
-        errorDetails.style.display = "block";
-        errorDetails.textContent = details;
-        tips.style.display = "block";
-    } else {
-        errorDetails.style.display = "none";
-        errorDetails.textContent = "";
-        tips.style.display = "none";
-    }
-}
-
-// Demo fallback content (ditampilkan dalam raw mode jika RAW_OUTPUT=true)
-function showDemoResult() {
-    const demoObj = {
-        identifikasi: "Tanaman Cabai (Capsicum annuum)",
-        status: "Tanaman sehat dengan pertumbuhan optimal",
-        gejala: "Daun berwarna hijau tua cerah dan mengkilap\nTidak ada bercak atau deformasi\nTextur daun halus dan kenyal\nPertumbuhan daun merata",
-        diagnosis: "Tidak ada masalah kesehatan terdeteksi. Tanaman berada dalam kondisi prima berdasarkan indikator visual.",
-        rekomendasi: "1. Pertahankan jadwal penyiraman rutin (pagi dan sore)\n2. Lanjutkan pemupukan setiap 2 minggu dengan pupuk NPK\n3. Monitor secara berkala untuk deteksi dini hama/penyakit",
-        raw: "Hasil demo"
-    };
-
-    if (RAW_OUTPUT) {
-        displayRawResult(demoObj, true);
-    } else {
-        renderPrettyResultFromResponse(demoObj, true);
-    }
-
-    demoBtn.style.display = "none";
-}
-
-// =========================
-// REAL AI CALL (tanpa timeout)
-// =========================
 analyzeBtn.addEventListener("click", async () => {
-    analyzeBtnWrapper.style.display = "none";
-    loading.style.display = "block";
-    resultContainer.style.display = "none";
-    errorDetails.style.display = "none";
-    demoBtn.style.display = "none";
+    const base64 = imagePreview.src;
 
-    const imageBase64 = imagePreview.src;
+    loading.style.display = "block";
+    previewContainer.style.display = "none";
+    resultContainer.style.display = "none";
 
     try {
         const res = await fetch(API_URL, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ image: imageBase64 })
+            body: JSON.stringify({
+                image: base64,
+                filename: "plant.jpg"
+            })
         });
 
-        // Jika server merespon status non-2xx, ambil teks respons untuk debugging
-        if (!res.ok) {
-            let serverText = "";
-            try {
-                serverText = await res.text();
-            } catch (e) {
-                serverText = "<tidak dapat membaca body response>";
-            }
-            const details = `Server returned HTTP ${res.status} ${res.statusText}\nResponse body:\n${serverText}`;
-            console.error(details);
-            // Tampilkan pesan ke user & tawarkan demo fallback
-            showResult("❗ Error: Server mengembalikan status error saat terhubung ke AI Agent.", details);
-            demoBtn.style.display = "inline-block";
-            return;
-        }
+        const data = await res.json();
 
-        // Coba parse JSON
-        let data;
-        try {
-            data = await res.json();
-        } catch (e) {
-            const txt = await res.text().catch(() => "<tidak dapat membaca body>");
-            const details = `Gagal mengurai JSON dari server.\nBody:\n${txt}`;
-            console.error(details, e);
-            showResult("❗ Error: Respons dari AI tidak berbentuk JSON yang valid.", details);
-            demoBtn.style.display = "inline-block";
-            return;
-        }
+        loading.style.display = "none";
+        resultContainer.style.display = "block";
 
-        // Jika RAW_OUTPUT aktif, tampilkan response mentah (JSON-stringified).
-        if (RAW_OUTPUT) {
-            displayRawResult(data, false);
-        } else {
-            // Banyak n8n flow membungkus hasil di { output: {...} }, renderPrettyResultFromResponse menangani itu.
-            renderPrettyResultFromResponse(data, false);
-        }
-
-    } catch (error) {
-        console.error("Fetch error:", error);
-
-        if (error.message && error.message.includes("Failed to fetch")) {
-            const details = `Gagal melakukan fetch ke ${API_URL}.\nKemungkinan penyebab: server mati, alamat salah, atau masalah CORS.`;
-            showResult("❗ Error: Tidak dapat terhubung ke AI Agent.", details);
-        } else {
-            showResult("❗ Error: Terjadi error saat menghubungi AI Agent.", String(error));
-        }
-
-        demoBtn.style.display = "inline-block";
+        resultText.textContent = data.diagnosis || "Tidak ada diagnosis.";
+    } catch (err) {
+        loading.style.display = "none";
+        resultContainer.style.display = "block";
+        resultText.textContent = "❗ Terjadi kesalahan saat menghubungi AI";
     }
 });
 
-// Demo fallback button
-demoBtn.addEventListener("click", () => {
-    showDemoResult();
-});
-
-// RESET
 resetBtn.addEventListener("click", () => {
-    resultContainer.style.display = "none";
+    fileInput.value = "";
+    imagePreview.src = "";
     previewContainer.style.display = "none";
     uploadArea.style.display = "block";
-    analyzeBtnWrapper.style.display = "block";
-    imagePreview.src = "";
-    fileInput.value = "";
-    analyzeBtn.disabled = true;
-    errorDetails.style.display = "none";
-    demoBtn.style.display = "none";
-    tips.style.display = "none";
+    resultContainer.style.display = "none";
 });
 </script>
 
