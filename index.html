@@ -158,25 +158,26 @@
         formData.append("data", fileInput.files[0]); // sesuai webhook kamu
 
         try {
-            const response = await fetch(
-                "https://stanley3322.app.n8n.cloud/webhook/leaftguard",
-                {
-                    method: "POST",
-                    body: formData
-                }
-            );
-
-            const text = await response.text(); // 🔥 PLAINTEXT
-
-            loading.style.display = "none";
-            result.style.display = "block";
-            resultText.textContent = text;
-
-        } catch (err) {
-            loading.style.display = "none";
-            result.style.display = "block";
-            resultText.textContent = "❌ Error:\n" + err.message;
+    const response = await fetch(
+        "https://stanley3322.app.n8n.cloud/webhook/leaftguard",
+        {
+            method: "POST",
+            body: formData
         }
+    );
+
+    const text = await response.text(); // 🔥 WAJIB text()
+
+    loading.style.display = "none";
+    result.style.display = "block";
+    resultText.textContent = text;
+
+} catch (err) {
+    loading.style.display = "none";
+    result.style.display = "block";
+    resultText.textContent = "❌ Error:\n" + err.message;
+}
+
     });
 </script>
 
