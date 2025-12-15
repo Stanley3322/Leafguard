@@ -104,7 +104,7 @@ sendBtn.onclick=async()=>{
     result.style.display="none";
 
     const formData=new FormData();
-    formData.append("data",fileInput.files[0]); // 🔥 WAJIB "data"
+    formData.append("data",fileInput.files[0]); 
 
     try{
         const res=await fetch(
@@ -112,7 +112,7 @@ sendBtn.onclick=async()=>{
             {method:"POST",body:formData}
         );
 
-        const text=await res.text(); // 🔥 PLAINTEXT ONLY
+        const text=await res.text(); 
 
         loading.style.display="none";
         result.style.display="block";
